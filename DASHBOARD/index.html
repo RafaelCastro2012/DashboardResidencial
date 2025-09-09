@@ -1,0 +1,573 @@
+<!--
+Projeto: Dashboard Residencial
+Autor: Rafael Castro
+Fontes: 
+1-https://www.youtube.com/watch?v=uex8acHKlL8
+
+
+-->
+<!doctype html>
+<html lang="pt-BR" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Painel Controle Smart Home">
+    <meta name="keywords" content="IOT, Smart Home">
+    <meta name="author" content="Rafael Castro">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel - Smart Home</title>
+    <link rel="stylesheet" href="css/bootstrap-5.3.7/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.1.1/css/bootstrap5-toggle.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap5-toggle@5.1.1/js/bootstrap5-toggle.ecmas.min.js"></script>
+    <script src="https://unpkg.com/mqtt@5.14.0/dist/mqtt.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="conatiner-fluid">
+        <div class="container">
+            <i id="icon_broker" class="mb-2 mt-2 fa-solid fa-power-off fs-3"></i>
+            <div class="row">
+                <div class="col">
+                    <div class="row inter-uniquifier fw-bolder clima main text-white font">
+                        <div class="row">
+                        <div class="mb-3">Status</div>
+                        <div class="mb-1 me-1" id="cidade"></div>
+                        <div class="mb-1 me-1" id="condicao">Condição: Buscando...</div>
+                        <div class="mb-1 me-1" id="temperatura">Temperatura: Buscando...</div>
+                        <div class="me-1" id="umidade">Umidade: Buscando...</div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="inter-uniquifier fw-bolder h-25 clima main text-white">
+                        <div class="col">
+                            <div class="fs-5 text-center text-white">
+                                <div class="text-temperatura">
+                                    <div class="mb-3 text-wrap">Temperatura ambiente</div>
+                                    <i id="icon_temperatura" class="fa-solid fa-spinner fa-spin fs-2"></i>
+                                    <div id="nivel_temperatura">
+                                        Buscando...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 main inter-uniquifier text-wrap text-white mt-2">
+
+                    <div class="row">
+
+                        <p class="mt-1 mb-1 text-uppercase text-center text-white fw-bold">MEUS DISPOSITIVOS</p>
+                        <!-- card Sala-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title d-flex justify-content-center">Sala</div>
+                                        <i id="icon_lampada_sala"
+                                            class="d-flex justify-content-center fas fa-lightbulb fs-1 text-warning"></i>
+                                        <div class="center">
+                                            <input id="btn_lampada_sala" type="checkbox" checked data-toggle="toggle"
+                                                data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Sala -->
+
+                        <!-- card Quarto-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Quarto</div>
+                                        <i id="icon_lampada_quarto" class="fas fa-lightbulb fs-1 text-warning"></i>
+                                        <div>
+                                            <input id="btn_lampada_quarto" type="checkbox" checked data-toggle="toggle"
+                                                data-style="ios" data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Quarto-->
+
+                        <!-- card Cozinha-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Cozinha</div>
+                                        <i id="icon_lampada_cozinha" class="fas fa-lightbulb fs-1 text-warning"></i>
+                                        <div>
+                                            <input id="btn_lampada_cozinha" type="checkbox" checked data-toggle="toggle"
+                                                data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Cozinha-->
+
+                        <!-- card Banheiro -->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Banheiro</div>
+                                        <i id="icon_lampada_banheiro" class="fas fa-lightbulb fs-1 text-warning"></i>
+                                        <div>
+                                            <input id="btn_lampada_banheiro" type="checkbox" checked
+                                                data-toggle="toggle" data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Banheiro-->
+
+                        <!-- card Jardim-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Jardim</div>
+                                        <i id="icon_lampada_jardim" class="fas fa-lightbulb fs-1 text-warning"></i>
+                                        <div>
+                                            <input id="btn_lampada_jardim" type="checkbox" checked data-toggle="toggle"
+                                                data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Jardim-->
+
+                        <!-- card sala vento-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Bomba Agua</div>
+                                        <i id="icon_bomba_agua" class="fa-solid fa-arrow-up-from-water-pump fs-1"></i>
+                                        <div>
+                                            <input id="btn_bomba_agua" type="checkbox" checked data-toggle="toggle"
+                                                data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card -->
+                    </div>
+
+                    <!-- Novo bloco -->
+                    <div class="row">
+                        <!-- card Sala-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-espaco card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Irrigação</div>
+                                        <i id="icon_irrigacao" class="fa-solid fa-shower fs-1"></i>
+                                        <div>
+                                            <input id="btn_irrigacao" type="checkbox" checked data-toggle="toggle"
+                                                data-size="xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Sala -->
+
+                        <!-- card Quarto-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-espaco card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Eficiencia</div>
+                                        <i id="icon_eficiencia" class="fa-solid fa-spinner fa-spin fs-1"></i>
+                                        <div>
+                                            <div id="eficiencia">Buscando...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Quarto-->
+
+                        <!-- card Cozinha-->
+                        <div class="col-md-2 mb-2">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-espaco card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Nivel de Bateria</div>
+                                        <i id="icon_bateria" class="fa-solid fa-spinner fa-spin fs-1"></i>
+                                        <div id="bateria">
+                                            Buscando...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Cozinha-->
+
+                        <!-- card Banheiro -->
+                        <div class="col-md-2 mb-4">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-espaco card-body text-center text-wrap">
+                                        <div class=" card-title justify-content-center">Nivel de Água</div>
+                                        <i id="agua" class="text-center fa-solid fa-spinner fa-spin fs-1"></i>
+                                        <div id="nivel-agua">
+                                            Buscando...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Banheiro-->
+
+                        <!-- card Jardim-->
+                        <div class="col-md-2 mb-4">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Nivel de Umidade</div>
+                                        <i id="icon_nivel_agua" class="fa-solid fa-spinner fa-spin fs-1"></i>
+                                        <div id="nivel_umidade">
+                                            Buscando...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card Jardim-->
+
+                        <!-- card sala vento-->
+                        <div class="col-md-2 mb-4">
+                            <div class="col">
+                                <div class="card border border-dark">
+                                    <div class="card-body text-center text-wrap">
+                                        <div class="card-title justify-content-center">Nivel de Lumonisidade
+                                        </div>
+                                        <i id="icon_luminosidade" class="fa-solid fa-spinner fa-spin fs-1"></i>
+                                        <div id="nivel_luminosidade">
+                                            Buscando...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fim card -->
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap-5.3.7/bootstrap.bundle.min.js"></script>
+    <script src="js/clima.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn_lampada_sala = document.getElementById('btn_lampada_sala');
+            const icon_lampada_sala = document.getElementById('icon_lampada_sala');
+            const btn_bomba_agua = document.getElementById('btn_bomba_agua');
+            const icon_bomba_agua = document.getElementById('icon_bomba_agua');
+            const btn_lampada_quarto = document.getElementById('btn_lampada_quarto');
+            const icon_lampada_quarto = document.getElementById('icon_lampada_quarto');
+            const btn_lampada_cozinha = document.getElementById('btn_lampada_cozinha');
+            const icon_lampada_cozinha = document.getElementById('icon_lampada_cozinha');
+            const btn_lampada_banheiro = document.getElementById('btn_lampada_banheiro')
+            const icon_lampada_banheiro = document.getElementById('icon_lampada_banheiro');
+            const btn_lampada_jardim = document.getElementById('btn_lampada_jardim')
+            const icon_lampada_jardim = document.getElementById('icon_lampada_jardim');
+            const btn_irrigacao = document.getElementById('btn_irrigacao')
+            const icon_irrigacao = document.getElementById('icon_irrigacao');
+            const nvl_efic = document.getElementById('eficiencia')
+            const ic_efic = document.getElementById('icon_eficiencia')
+            const nvl_bat = document.getElementById('bateria')
+            const ic_bat = document.getElementById('icon_bateria')
+            const nvl_agua = document.getElementById('nivel-agua')
+            const ic_agua = document.getElementById('agua')
+            const nvl_umidade = document.getElementById('nivel_umidade')
+            const ic_umid = document.getElementById('icon_nivel_agua')
+            const nvl_luminosidade = document.getElementById('nivel_luminosidade')
+            const ic_ilum = document.getElementById('icon_luminosidade')
+            const nvl_temperatura = document.getElementById('nivel_temperatura')
+            const temperatura = document.getElementById('icon_temperatura')
+            const power = document.getElementById('icon_broker')
+
+            //Conexão com o BROKER MQTT
+            const broker = 'wss://broker.hivemq.com:8884/mqtt';
+            /* Inicia uma instancia com o Broker e salva no
+            objeto cliente */
+            const cliente = mqtt.connect(broker)
+            const topicosMQTT = [
+                'maquete/ambiente/temperatura',
+                'maquete/ambiente/luminosidade',
+                'maquete/sistema/nivel_umidade',
+                'maquete/sistema/nivel_agua',
+                'maquete/energia/nivel_bateria',
+                'maquete/energia/eficiencia',
+                'maquete/luz/sala',
+                'maquete/luz/quarto',
+                'maquete/luz/cozinha',
+                'maquete/luz/banheiro',
+                'maquete/luz/jardim',
+                'maquete/irrigacao',
+                'maquete/sistema/bomba_agua'
+            ]
+
+            for (let i = 0; i < topicosMQTT.length; i++) {
+                /*Conecta ao Broker e inscreve nos tópicos*/
+                cliente.on('connect', () => {
+                    console.log('Conectado ao BROKER');
+                    cliente.subscribe((topicosMQTT[i]), (err) => {
+                        if (!err) {
+                            console.log(`Conectado no tópico: ${topicosMQTT[i]}`)
+                        };
+                    });
+                });
+            }
+            /*Verifica se existe mensagem no tópico inscrito*/
+            cliente.on('message', (topico, message) => {
+                const mensagem = message.toString();
+                let vlr_bateria = 0;
+                let vlr_temperatura = 0;
+
+                console.log(`${topico}: ${message}`)
+                if (topico === topicosMQTT[6]) {
+                    if (mensagem === 'off') {
+                        btn_lampada_sala.bootstrapToggle('off', false)
+                        icon_lampada_sala.className = 'fas fa-lightbulb fs-1';
+                    }
+                    if (mensagem === 'on') {
+                        btn_lampada_sala.bootstrapToggle('on', true)
+                        icon_lampada_sala.className = 'fas fa-lightbulb fs-1 text-warning';
+                    }
+                }
+                if (topico === topicosMQTT[7]) {
+                    if (mensagem === 'off') {
+                        btn_lampada_quarto.bootstrapToggle('off', false)
+                        icon_lampada_quarto.className = 'fas fa-lightbulb fs-1';
+                    }
+
+                    if (mensagem === 'on') {
+                        btn_lampada_quarto.bootstrapToggle('on', true)
+                        icon_lampada_quarto.className = 'fas fa-lightbulb fs-1 text-warning';
+                    }
+                }
+                if (topico === topicosMQTT[8]) {
+                    if (mensagem === 'off') {
+                        btn_lampada_cozinha.bootstrapToggle('off', false)
+                        icon_lampada_cozinha.className = 'fas fa-lightbulb fs-1';
+                    }
+
+                    if (mensagem === 'on') {
+                        btn_lampada_cozinha.bootstrapToggle('on', true)
+                        icon_lampada_cozinha.className = 'fas fa-lightbulb fs-1 text-warning';
+                    }
+                }
+                if (topico === topicosMQTT[9]) {
+                    if (mensagem === 'off') {
+                        btn_lampada_banheiro.bootstrapToggle('off', false)
+                        icon_lampada_banheiro.className = 'fas fa-lightbulb fs-1';
+                    }
+                    if (mensagem === 'on') {
+                        btn_lampada_banheiro.bootstrapToggle('on', true)
+                        icon_lampada_banheiro.className = 'fas fa-lightbulb fs-1 text-warning';
+                    }
+                }
+                if (topico === topicosMQTT[10]) {
+                    if (mensagem === 'off') {
+                        btn_lampada_jardim.bootstrapToggle('off', false)
+                        icon_lampada_jardim.className = 'fas fa-lightbulb fs-1';
+                    }
+                    if (mensagem === 'on') {
+                        btn_lampada_jardim.bootstrapToggle('on', true)
+                        icon_lampada_jardim.className = 'fas fa-lightbulb fs-1 text-warning';
+                    }
+                }
+                if (topico === topicosMQTT[11]) {
+                    if (mensagem === 'off') {
+                        btn_irrigacao.bootstrapToggle('off', false)
+                        icon_irrigacao.className = 'fas fa-lightbulb fs-1';
+                    }
+                    if (mensagem === 'on') {
+                        btn_irrigacao.bootstrapToggle('on', true)
+                        icon_irrigacao.className = 'fas fa-lightbulb fs-1 text-warning';
+                    }
+                }
+                if (topico === topicosMQTT[12]) {
+                    if (mensagem === 'off') {
+                        btn_bomba_agua.bootstrapToggle('off', false)
+                        icon_bomba_agua.className = 'fa-solid fa-arrow-up-from-water-pump fs-1';
+                    }
+                    if (mensagem === 'on') {
+                        btn_bomba_agua.bootstrapToggle('on', true)
+                        icon_bomba_agua.className = 'fa-solid fa-arrow-up-from-water-pump fs-1 text-primary';
+                    }
+                }
+                if (topico === topicosMQTT[5]) {
+                    const vlr_eficiencia = message;
+                    nvl_efic.innerText = ` ${vlr_eficiencia}%`
+                    ic_efic.className = 'fa-solid fa-bolt-lightning fs-1 text-warning'
+                }
+                if (topico === topicosMQTT[4]) {
+                    // vlr_bateria = message;
+                    nvl_bat.innerText = ` ${message}%`
+                    if (message <= 20) {
+                        //vermelho
+                        ic_bat.className = 'fa-solid fa-battery-quarter fs-1 text-danger'
+                    } else if (message > 20 && message <= 49) {
+                        //laranja
+                        ic_bat.className = 'fa-solid fa-battery-half fs-1 bateria-laranja'
+                    } else if (message > 49 && message <= 74) {
+                        //amarelo
+                        ic_bat.className = 'fa-solid fa-battery-three-quarters fs-1 text-warning'
+                    } else if (message > 74) {
+                        //verde
+                        ic_bat.className = 'fa-solid fa-battery-full fs-1 text-success'
+                    }
+                }
+
+                if (topico === topicosMQTT[3]) {
+                    const vlr_agua = message;
+                    nvl_agua.innerText = ` ${vlr_agua}%`
+                    ic_agua.className = 'fa-solid fa-water fs-1 text-primary'
+                }
+                if (topico === topicosMQTT[2]) {
+                    const vlr_umidade = message;
+                    nvl_umidade.innerText = ` ${vlr_umidade}%`
+                    ic_umid.className = 'fa-solid fa-droplet fs-1 text-primary'
+                }
+                if (topico === topicosMQTT[1]) {
+                    const vlr_luminosidade = message;
+                    let conversao = (vlr_luminosidade / 1023) * 100;
+                    nvl_luminosidade.innerText = ` ${conversao.toFixed(2)}%`
+                    ic_ilum.className = 'fa-solid fa-cloud-sun fs-1 text-warning'
+                }
+                if (topico === topicosMQTT[0]) {
+                    const vlr_temperatura = parseFloat(message)
+                    nvl_temperatura.innerText = ` ${vlr_temperatura}° 
+                    graus`
+                    if (vlr_temperatura >= 28) {
+                        temperatura.className = 'fa-solid fa-temperature-high fs-1 text-danger';
+                    } else {
+                        temperatura.className = 'fa-solid fa-temperature-high fs-1 text-info';
+                    }
+                }
+
+                if (cliente) {
+                    power.className = 'mt-2 mb-2 power fa-solid fa-power-off fs-3 text-success'
+                }
+            })
+
+            //Codigo Lampada Sala
+            // Monitora mudança de estado do botão
+            btn_lampada_sala.bootstrapToggle();
+            //Quando tem mudança no botão executa a função
+            btn_lampada_sala.onchange = () => {
+                btn_lampada_sala.checked ? post_sala('on') : post_sala('off');
+            }
+            function post_sala(message) {
+                if (message === 'off') {
+                    icon_lampada_sala.className = 'fas fa-lightbulb fs-1';
+                } else {
+                    icon_lampada_sala.className = 'fas fa-lightbulb fs-1 text-warning';
+                }
+            }
+            // Fim Codigo Lampada Sala
+
+            //Codigo Condicionado Ar-Condicionado Sala
+
+            // Monitora mudança de estado do botão
+            btn_sala_arcondicionado.bootstrapToggle();
+            //Quando tem mudança no botão executa a função
+            btn_sala_arcondicionado.onchange = () => {
+                btn_sala_arcondicionado.checked ? post_sala_arcondicionado('ligado') : post_sala_arcondicionado('desligado');
+            }
+            function post_sala_arcondicionado(estado) {
+                if (estado === 'desligado') {
+                    icon_arcondicionado_sala.className = 'fa-solid fa-fan fs-1';
+                } else {
+                    icon_arcondicionado_sala.className = 'fa-solid fa-fan fa-spin fs-1';
+                }
+            }
+            // Fim Codigo Condicionado Ar-Condicionado Sala
+
+
+            //Codigo Quarto
+            btn_lampada_quarto.bootstrapToggle();
+            btn_lampada_quarto.onchange = () => {
+                btn_lampada_quarto.checked ? post_quarto('Ligado') : post_quarto('Desligado');
+            }
+            function post_quarto(estado) {
+                if (estado === 'Desligado') {
+                    icon_lampada_quarto.className = 'fas fa-lightbulb fs-1';
+                } else {
+                    icon_lampada_quarto.className = 'fas fa-lightbulb fs-1 text-warning';
+                }
+            }
+
+            //Codigo Cozinha
+
+            btn_lampada_cozinha.bootstrapToggle();
+            btn_lampada_cozinha.onchange = () => {
+                btn_lampada_cozinha.checked ? post_cozinha('Ligado') : post_cozinha('Desligado');
+            }
+            function post_cozinha(estado) {
+                if (estado === 'Desligado') {
+                    icon_lampada_cozinha.className = 'fas fa-lightbulb fs-1';
+                } else {
+                    icon_lampada_cozinha.className = 'fas fa-lightbulb fs-1 text-warning';
+                }
+            }
+
+            //Codigo Banheiro
+            btn_lampada_banheiro.bootstrapToggle();
+            btn_lampada_banheiro.onchange = () => {
+                btn_lampada_banheiro.checked ? post_banheiro('Ligado') : post_banheiro('Desligado');
+            }
+            function post_banheiro(estado) {
+                if (estado === 'Desligado') {
+                    icon_lampada_banheiro.className = 'fas fa-lightbulb fs-1';
+                } else {
+                    icon_lampada_banheiro.className = 'fas fa-lightbulb fs-1 text-warning';
+                }
+            }
+
+            //Codigo Jardim
+
+            btn_lampada_jardim.bootstrapToggle();
+            btn_lampada_jardim.onchange = () => {
+                btn_lampada_jardim.checked ? post_jardim('Ligado') : post_jardim('Desligado');
+            }
+            function post_jardim(estado) {
+                if (estado === 'Desligado') {
+                    icon_lampada_jardim.className = 'fas fa-lightbulb fs-1';
+                } else {
+                    icon_lampada_jardim.className = 'fas fa-lightbulb fs-1 text-warning';
+                }
+            }
+
+        })
+    </script>
+</body>
+
+</html>

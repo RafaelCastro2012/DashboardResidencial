@@ -1,0 +1,50 @@
+body{
+    background-color: #000000;
+}
+.inter-uniquifier{
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-size: 15px;
+}
+.font{
+    font-size: 20px;
+}
+.imagem{
+    display: flex;
+    flex-direction: row;
+}
+.clima{
+    min-height: 250px;
+    border-radius: 5%;
+    padding: 5%;
+}
+.text-temperatura{
+    font-size: 27px;
+    font-weight: bold;
+}
+
+.card-body{
+    max-width: 150px !important;
+    max-height: 150px !important;
+}
+
+/* .card-espaco{
+    margin-bottom: 23px;
+} */
+
+
+.card{
+    min-height: 140px;
+    min-width: 100px;
+    align-items: center !important;
+    background-color: #000000;
+    border-radius: 5%;
+}
+.main{
+    background-color: #252525;
+    border-radius: 10px;
+}
+
+
